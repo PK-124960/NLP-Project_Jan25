@@ -12,18 +12,7 @@ This project is an **AI-powered Government Document Creation System** designed t
 
 ## 📜 System Workflow
 ![Workflow Diagram](images/Project_concept.png)
-
-
 ![Workflow Diagram](images/System_Workflow.png)
-```mermaid
-graph TD;
-    A[Upload PDF Document] -->|Tesseract OCR| B(Extracted Text)
-    B -->|Rule-Based OCR Correction| C(Cleaned Text)
-    C -->|NER Processing| D(Extracted Entities)
-    D -->|Summarization Model| E(Summarized Content)
-    E -->|Text Formalization| F(Formalized Government Document)
-    F -->|DOCX/PDF Export| G[Final หนังสือส่ง]
-```
 
 ## ⚙️ Installation
 ```bash
