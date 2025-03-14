@@ -22,7 +22,7 @@ graph TD;
     C -->|NER Processing| D(Extracted Entities)
     D -->|Summarization Model| E(Summarized Content)
     E -->|Text Formalization| F(Formalized Government Document)
-    F -->|DOCX/PDF Export| G[Final "หนังสือส่ง"]
+    F -->|DOCX/PDF Export| G[Final หนังสือส่ง]
 ```
 
 ## ⚙️ Installation
