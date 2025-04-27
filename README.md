@@ -72,9 +72,10 @@ python src/document_generator.py --input formalized_text.json --output final_doc
 Generate a concise, formal summary from the main content of the Incoming Letter.
 
 **Method:**
-- Abstractive summarization using WangchanGLM
-- Generated 5 versions (temperature = 0.1–0.5)
-- Selected best version based on **Cosine Similarity**
+- Tokenize inouts using custom tokenizer
+- Preprocessing to remove noise words 
+- Abstractive summarization using WangchanGLM 6B (VISTEC)
+- Extractive summarization using WangchanBERTa-base-att-spm-uncased
 
 **Evaluation Metrics:**  
 - ROUGE-L
