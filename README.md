@@ -2,17 +2,33 @@
 
 ## 📌 Project Overview
 This project is an **AI-powered Government Document Creation System** designed to automate the processing and generation of **official Thai government documents ("หนังสือราชการ")**. It leverages **OCR, Named Entity Recognition (NER), Summarization, and AI-driven Text Formalization** to transform **unstructured text into structured, formal Thai documents**.
+This system automatically generates a formal **Outgoing Letter ("หนังสือตอบกลับ")** from a scanned **Incoming Letter ("หนังสือรับ")** PDF.  
+It leverages a combination of:
+- **Tesseract OCR** for text extraction
+- **Rule-based NER** for section detection
+- **Custom Tokenizer** for specialized tokens (5W1H)
+- **WangchanGLM** for summarization and content generation
+- **Streamlit** for an interactive user interface
 
-## 🚀 Features
-✅ **OCR Processing (Tesseract + Rule-Based Correction)** → Extracts text from scanned documents.  
-✅ **Named Entity Recognition (NER) (Rule-Based + Dictionary Matching)** → Identifies key elements in documents (e.g., "ที่", "วันที่", "เรื่อง").  
-✅ **Summarization (WangchanGLM + AI Post-processing)** → Condenses long text while retaining key information.  
-✅ **Formal Thai Text Transformation (Fine-tuned Thai LLM + Rule-Based Adjustments)** → Converts informal text into proper Thai government writing.  
-✅ **Document Generation & Exporting (DOCX/PDF)** → Generates official "หนังสือส่ง" (Outgoing Letters) from extracted content.  
+## 🛠️ System Workflow
+1. **Upload Incoming Letter (PDF)**  
+   ⮕ OCR text extraction + pre-processing (denoising, adaptive threshold)
 
+2. **Text Correction & Section Extraction**  
+   ⮕ Rule-based extraction (e.g., "ส่วนราชการ", "ที่", "วันที่", "เรื่อง", "เรียน", "อ้างถึง", "สิ่งที่ส่งมาด้วย")
+
+3. **Edit and Confirm Sections**  
+   ⮕ Manual correction allowed + Saving to database
+
+4. **Create Outgoing Letter**  
+   - Section 1 (Summary): Generate multiple versions using LLM with various temperatures, select the best one using **Cosine Similarity**
+   - Section 2 (Fact Expansion): Generate based on Section 1
+   - Section 3 (Command/Consideration): Generate using instruction-based prompting, with and without feedback example
+
+5. **Preview and Export**  
+   ⮕ Export the completed Outgoing Letter as a DOCX file.
 ## 📜 System Workflow
 ![Workflow Diagram](images/Project_concept.png)
-![Workflow Diagram](images/System_Workflow.png)
 
 ## ⚙️ Installation
 ```bash
@@ -49,68 +65,94 @@ python src/document_generator.py --input formalized_text.json --output final_doc
 - **Summarization Dataset (Thai Wikipedia Summarization + Fine-Tuned AI Data)**.
 - **Formal Thai Language Dataset (Lexitron 2.0 + Manually Collected Phrases)**.
 
-## 🔥 Model Training & Evaluation
-### OCR Processing Evaluation
-**Metrics:** Character Error Rate (CER), Word Error Rate (WER)  
-**Expected Results:** Lower CER and WER indicate improved OCR accuracy.  
+---
 
-### Named Entity Recognition (NER) Evaluation
-**Metrics:** Precision, Recall, F1-score  
-**Expected Results:** High F1-score (>85%) ensures accurate entity extraction.  
+## 🧪 Experiments Conducted
 
-### Summarization Evaluation
-**Metrics:** BLEU Score, ROUGE Score  
-**Expected Results:** BLEU > 30%, ROUGE > 50% ensures summaries retain key information.  
+### Experiment 1: Section 1 Summarization
 
-### Formal Thai Text Evaluation
-**Metrics:** Human Evaluation (Score 1-5)  
-**Expected Results:** Avg. Score > 4.0 ensures high-quality formal Thai text.  
+**Goal:**  
+Generate a concise, formal summary from the main content of the Incoming Letter.
 
-## 🧪 Experiment Details
-To validate the effectiveness of the proposed approach, the following experiments were conducted:
+**Method:**
+- Abstractive summarization using WangchanGLM
+- Generated 5 versions (temperature = 0.1–0.5)
+- Selected best version based on **Cosine Similarity**
 
-### **1. OCR Performance Analysis**
-- **Objective:** Assess the impact of Rule-Based OCR Correction on OCR accuracy.
-- **Methodology:**
-  - Apply **Tesseract OCR** on sample government documents.
-  - Compare **raw OCR output vs. corrected output** (using Rule-Based Corrections).
-  - Evaluate performance using **Character Error Rate (CER) and Word Error Rate (WER)**.
-- **Results:**
-  - Expected to achieve **CER < 10%** after correction.
+**Evaluation Metrics:**  
+- ROUGE-L
+- BLEU Score
+- Cosine Similarity
 
-### **2. NER Extraction Performance**
-- **Objective:** Measure accuracy of Named Entity Recognition (NER) on structured government data.
-- **Methodology:**
-  - Run **Rule-Based NER model** on annotated datasets.
-  - Evaluate using **Precision, Recall, and F1-score**.
-- **Results:**
-  - Expected **F1-score > 85%**.
+**Results:**
+- **Extractive Summarization Average Metrics** (from Excel results):
+  - ROUGE-L F1 ≈ Moderate (e.g., 0.25–0.85 depending on sample)
+  - BLEU ≈ Low–Moderate
+  - Cosine Similarity ≈ 0.58–0.93
+- **Abstractive Summarization Average Metrics**:
+  - ROUGE-L F1 ≈ 0.55–0.92
+  - BLEU ≈ 0.01–0.37
+  - Cosine Similarity ≈ 0.64–0.83
 
-### **3. Summarization Evaluation**
-- **Objective:** Assess WangchanGLM’s ability to summarize government documents.
-- **Methodology:**
-  - Train summarization model using **Thai Wikipedia Summarization Dataset**.
-  - Compare AI-generated summaries to human-written summaries.
-  - Evaluate using **BLEU Score and ROUGE Score**.
-- **Results:**
-  - Expected **BLEU > 30%, ROUGE > 50%**.
+**Conclusion:**
+- Abstractive summaries from WangchanGLM generally achieved **higher ROUGE-L** and **better semantic similarity** than pure extractive summaries.
 
-### **4. Formal Thai Text Quality Assessment**
-- **Objective:** Ensure AI-generated text follows official Thai writing standards.
-- **Methodology:**
-  - Apply **Fine-Tuned Thai LLM** to transform informal text into formal text.
-  - Evaluate with **human scoring (1-5 scale) on Grammatical Accuracy, Contextual Appropriateness, and Naturalness**.
-- **Results:**
-  - Expected **Average Score > 4.0**.
+---
 
-## 🏆 Results
-| **Module** | **Metrics Used** | **Expected Score** |
-|------------|------------------|------------------|
-| **OCR Processing** | Character Error Rate (CER), Word Error Rate (WER) | CER < 10% |
-| **NER Extraction** | Precision, Recall, F1-score | F1-score > 85% |
-| **Summarization** | BLEU Score, ROUGE Score | BLEU > 30%, ROUGE > 50% |
-| **Formal Thai Text** | Human Evaluation (Score 1-5) | Avg. Score > 4.0 |
+### Experiment 2: Section 2 and 3 Generation
 
+**Goal:**  
+Expand factual information and generate actionable commands from Section 1.
+
+**Method:**
+- Fact expansion using prompt-based generation.
+- Command generation (Section 3) with and without Feedback Examples.
+
+**Evaluation Metrics:**  
+- ROUGE-L F1
+- BLEU Score
+- Cosine Similarity
+
+✅ **Section 3 (With Feedback Correction):**
+- Cosine Similarity: **0.8244**
+- BLEU Score: **0.3726**
+- ROUGE-L F1: **0.9333**
+
+✅ **Section 3 (Without Feedback Correction):**
+- Cosine Similarity: **0.5566**
+- BLEU Score: **0.0110**
+- ROUGE-L F1: **0.8571**
+
+**Conclusion:**
+- **Using feedback examples greatly improves** the quality of Section 3 (higher BLEU, ROUGE-L, and Cosine Similarity).
+- Without feedback, generation tends to drift from formal tone and introduce hallucinated content.
+
+---
+
+## 📦 Technology Stack
+
+| Area | Tools |
+|:----|:------|
+| OCR | Tesseract OCR + OpenCV |
+| NLP | HuggingFace Transformers, WangchanGLM, SentenceTransformers |
+| Data Processing | pandas, regex, PyThaiNLP |
+| Web App | Streamlit |
+| Evaluation | Cosine Similarity, ROUGE, BLEU |
+
+---
+
+## 🚀 Key Features
+
+- 🎯 High-accuracy OCR text extraction from scanned PDFs
+- 🛠️ Editable and customizable extracted sections
+- 🧠 LLM-based formal letter generation (Section 1, 2, 3)
+- 📈 Automatic evaluation and selection of best summarization
+- 📄 Ready-to-export DOCX format for official use
+- 🌿 Earth-tone UI Theme (user-friendly design)
+
+---
+
+**Results:**
 ## 👥 Contributors
 - **Team Member 1** - Ponkrit Kaewsawee
 - **Team Member 2** - Voravit Chaiaroon 
