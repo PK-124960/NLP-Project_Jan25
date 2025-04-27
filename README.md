@@ -59,11 +59,8 @@ python src/text_formalization.py --input summarized_text.json --output formalize
 python src/document_generator.py --input formalized_text.json --output final_document.docx
 ```
 
-## 📊 Dataset & Preprocessing
-- **Government Document Dataset (Thai OCR: DLA Document)** → Used for training OCR and NER models.
-- **OCR Processing Data** → Contains raw OCR text and corrected outputs.
-- **Summarization Dataset (Thai Wikipedia Summarization + Fine-Tuned AI Data)**.
-- **Formal Thai Language Dataset (Lexitron 2.0 + Manually Collected Phrases)**.
+## 📊 Dataset
+- **Real Government Documents 30 files** 
 
 ---
 
