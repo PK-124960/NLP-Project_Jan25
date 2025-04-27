@@ -2,8 +2,8 @@
 
 ## 📌 Project Overview
 This project is an **AI-powered Government Document Creation System** designed to automate the processing and generation of **official Thai government documents ("หนังสือราชการ")**. It leverages **OCR, Named Entity Recognition (NER), Summarization, and AI-driven Text Formalization** to transform **unstructured text into structured, formal Thai documents**.
-This system automatically generates a formal **Outgoing Letter ("หนังสือตอบกลับ")** from a scanned **Incoming Letter ("หนังสือรับ")** PDF.  
-It leverages a combination of:
+
+This system automatically generates a formal **Outgoing Letter ("หนังสือตอบกลับ")** from a scanned **Incoming Letter ("หนังสือรับ")** PDF.  It leverages a combination of:
 - **Tesseract OCR** for text extraction
 - **Rule-based NER** for section detection
 - **Custom Tokenizer** for specialized tokens (5W1H)
